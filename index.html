@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f5f0">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="A personal catalogue for your fragrance collection.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https:; object-src 'none'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <title>Scent Archive</title>
+  <link rel="icon" href="scent-icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="scent-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="seed.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-content">
+      <a class="brand" href="index.html">
+        <img src="scent-icon.png" alt="" width="36" height="36">
+        <span>Scent Archive</span>
+      </a>
+      <div id="header-actions" class="header-actions" hidden>
+        <button id="backup-button" class="button button-quiet" type="button" aria-label="Backups">
+          <span data-icon="archive"></span><span class="backup-label">Backups</span>
+        </button>
+        <button id="add-button" class="button button-primary" type="button" aria-label="Add fragrance">
+          <span data-icon="plus"></span><span>Add<span class="add-long"> fragrance</span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell welcome" id="welcome" hidden>
+    <section class="welcome-panel" aria-labelledby="welcome-title">
+      <div class="welcome-content">
+        <p class="eyebrow"><span data-icon="lock"></span> Private collection</p>
+        <h1 id="welcome-title">Your fragrance<br>collection</h1>
+        <p class="welcome-intro">Unlock your collection to use Scent Archive on this device.</p>
+        <form id="unlock-form" class="unlock-form">
+          <label for="unlock-code">Collection unlock code</label>
+          <div class="unlock-controls">
+            <input id="unlock-code" type="password" autocomplete="off" autocapitalize="none" spellcheck="false" required aria-describedby="unlock-error">
+            <button class="button button-light" type="submit" id="unlock-button">Unlock</button>
+          </div>
+          <p id="unlock-error" class="error-text" role="alert" hidden></p>
+        </form>
+        <button id="welcome-import" class="text-button" type="button"><span data-icon="upload"></span> Import a collection file</button>
+      </div>
+    </section>
+  </main>
+
+  <main class="shell workspace" id="workspace" hidden>
+    <section class="hero" aria-labelledby="collection-title">
+      <div class="hero-content">
+        <p class="eyebrow"><span class="hero-rule" aria-hidden="true"></span> Personal inventory</p>
+        <h1 id="collection-title">My fragrance<br>collection</h1>
+        <p id="hero-description" class="hero-description"></p>
+      </div>
+    </section>
+
+    <dl class="overview" aria-label="Collection totals">
+      <div class="metric">
+        <dt><span class="metric-icon" data-icon="bottle"></span>Full bottles</dt>
+        <dd id="stat-bottles">0</dd>
+      </div>
+      <div class="metric">
+        <dt><span class="metric-icon" data-icon="vial"></span>Decants</dt>
+        <dd id="stat-decants">0</dd>
+      </div>
+      <div class="metric">
+        <dt><span class="metric-icon" data-icon="heart"></span>Wishlist</dt>
+        <dd id="stat-wishlist">0</dd>
+      </div>
+      <div class="metric">
+        <dt><span class="metric-icon" data-icon="wallet"></span>Total paid (CAD)</dt>
+        <dd id="stat-paid">$0.00</dd>
+      </div>
+    </dl>
+
+    <section class="shelf" aria-labelledby="shelf-title">
+      <div class="section-heading">
+        <h2 id="shelf-title">Fragrances</h2>
+        <div class="view-switch" role="group" aria-label="Collection layout">
+          <button type="button" data-view="grid" aria-pressed="true" title="Grid view" aria-label="Grid view"><span data-icon="grid"></span></button>
+          <button type="button" data-view="list" aria-pressed="false" title="List view" aria-label="List view"><span data-icon="list"></span></button>
+        </div>
+      </div>
+      <div class="status-filters" role="group" aria-label="Filter by status">
+        <button type="button" data-status="all" aria-pressed="true">All <span class="tab-count" id="count-all"></span></button>
+        <button type="button" data-status="owned" aria-pressed="false">Owned <span class="tab-count" id="count-owned"></span></button>
+        <button type="button" data-status="incoming" aria-pressed="false">Incoming <span class="tab-count" id="count-incoming"></span></button>
+        <button type="button" data-status="gone" aria-pressed="false">Gone <span class="tab-count" id="count-gone"></span></button>
+      </div>
+      <div class="filter-bar">
+        <div class="search-field">
+          <span data-icon="search"></span>
+          <input id="search" type="search" aria-label="Search fragrances" placeholder="Search name, house, or notes" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="select-wrap">
+          <select id="filter-kind" aria-label="Filter by kind">
+            <option value="">All kinds</option>
+            <option value="full_bottle">Full bottle</option>
+            <option value="decant">Decant</option>
+            <option value="wishlist">Wishlist</option>
+          </select><span data-icon="chevron"></span>
+        </div>
+        <div class="select-wrap house-select">
+          <select id="filter-house" aria-label="Filter by house"><option value="">All houses</option></select><span data-icon="chevron"></span>
+        </div>
+        <div class="select-wrap sort-select">
+          <select id="sort" aria-label="Sort fragrances">
+            <option value="name">Name A–Z</option>
+            <option value="house">House A–Z</option>
+            <option value="recent">Recently added</option>
+            <option value="price-high">Highest price</option>
+            <option value="price-low">Lowest price</option>
+            <option value="size">Largest size</option>
+          </select><span data-icon="chevron"></span>
+        </div>
+      </div>
+      <div class="results-line">
+        <p id="results-label" aria-live="polite"></p>
+        <button id="clear-filters" class="text-button" type="button" hidden>Clear filters</button>
+      </div>
+      <div id="collection" class="collection-grid" aria-label="Fragrances"></div>
+      <div id="empty-state" class="empty-state" hidden>
+        <span data-icon="bottle"></span>
+        <h3 id="empty-title"></h3>
+        <p id="empty-copy"></p>
+        <button id="empty-action" class="button button-outline" type="button"></button>
+      </div>
+      <div class="more-row" id="more-row" hidden><button id="show-more" type="button" class="button button-outline">Show more</button></div>
+    </section>
+
+    <footer class="footer"><span data-icon="archive"></span> Changes are saved on this device.</footer>
+  </main>
+
+  <dialog id="detail-dialog" class="dialog detail-dialog" aria-labelledby="detail-name">
+    <div class="dialog-body" id="detail-content"></div>
+    <button type="button" class="icon-button dialog-close" data-close aria-label="Close fragrance"><span data-icon="close"></span></button>
+  </dialog>
+
+  <dialog id="edit-dialog" class="dialog" aria-labelledby="editor-title">
+    <div class="dialog-heading">
+      <h2 id="editor-title">Add fragrance</h2>
+      <button type="button" class="icon-button" data-close aria-label="Close editor"><span data-icon="close"></span></button>
+    </div>
+    <form id="editor" class="editor">
+      <div class="form-grid">
+        <label class="form-field">Fragrance name<input name="name" type="text" required autofocus></label>
+        <label class="form-field">House<input name="house" type="text"></label>
+        <label class="form-field">Kind
+          <span class="select-wrap"><select name="kind"><option value="full_bottle">Full bottle</option><option value="decant">Decant</option><option value="wishlist">Wishlist</option></select><span data-icon="chevron"></span></span>
+        </label>
+        <label class="form-field">Status
+          <span class="select-wrap"><select name="status"><option value="owned">Owned</option><option value="incoming">Incoming</option><option value="gone">Gone</option></select><span data-icon="chevron"></span></span>
+        </label>
+        <label class="form-field">Size (mL)<input name="size_ml" type="number" inputmode="decimal" step="any" min="0"></label>
+        <label class="form-field"><span id="price-label">Price paid (CAD)</span><input name="price_paid" type="number" inputmode="decimal" step="0.01" min="0"></label>
+        <label class="form-field">Seasons<input name="seasons" type="text" placeholder="e.g. Fall / Winter"></label>
+        <label class="form-field">Occasions<input name="occasions" type="text" placeholder="e.g. Office, evening"></label>
+        <label class="form-field">Longevity<input name="longevity" type="text" placeholder="e.g. 6–8 h"></label>
+        <label class="form-field">Photo URL<input name="photo_url" type="url" inputmode="url" placeholder="https://"></label>
+        <label class="form-field wide">Notes<textarea name="notes" rows="4"></textarea></label>
+        <label class="checkbox-field wide"><input name="want_full_bottle" type="checkbox"> Want a full bottle</label>
+      </div>
+      <fieldset id="gone-fields" class="gone-fields" hidden disabled>
+        <legend>Departure details</legend>
+        <div class="form-grid">
+          <label class="form-field">Reason<input name="gone_reason" type="text" placeholder="e.g. Sold, finished, gifted"></label>
+          <label class="form-field">Date<input name="gone_date" type="date"></label>
+          <label class="form-field"><span id="sale-label">Sale price (CAD)</span><input name="sold_price" type="number" inputmode="decimal" step="0.01" min="0"></label>
+        </div>
+      </fieldset>
+      <p id="edit-error" class="error-text" role="alert" hidden></p>
+      <div class="dialog-actions editor-actions">
+        <button type="button" id="delete-fragrance" class="text-button danger-text" hidden>Delete fragrance</button>
+        <button type="button" class="button button-outline" data-close>Cancel</button>
+        <button type="submit" class="button button-primary">Save fragrance</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="backup-dialog" class="dialog compact-dialog" aria-labelledby="backup-title">
+    <div class="dialog-heading">
+      <h2 id="backup-title">Collection backups</h2>
+      <button type="button" class="icon-button" data-close aria-label="Close backups"><span data-icon="close"></span></button>
+    </div>
+    <div class="dialog-body backup-body">
+      <p>Export your collection as a JSON file to keep a copy or move it to another device. Import restores the collection from a file.</p>
+      <div class="dialog-actions">
+        <button type="button" id="import-button" class="button button-outline"><span data-icon="upload"></span> Import JSON</button>
+        <button type="button" id="export-button" class="button button-primary"><span data-icon="download"></span> Export JSON</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="confirm-dialog" class="dialog compact-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-message">
+    <div class="dialog-heading"><h2 id="confirm-title"></h2></div>
+    <div class="dialog-body backup-body">
+      <p id="confirm-message"></p>
+      <div class="dialog-actions">
+        <button type="button" class="button button-outline" data-close autofocus>Cancel</button>
+        <button type="button" id="confirm-action" class="button button-primary"></button>
+      </div>
+    </div>
+  </dialog>
+
+  <input type="file" id="import-file" accept=".json,application/json" hidden>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <noscript><p class="shell">Scent Archive needs JavaScript to open your collection.</p></noscript>
+</body>
+</html>
