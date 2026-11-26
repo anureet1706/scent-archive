@@ -27,6 +27,7 @@ The exported JSON contains readable notes and prices. Keep backups and the unloc
 | `amber-still-life.jpg`, `scent-icon.png` | Header photograph and app icon |
 | `*.woff2`, `FONT-LICENSES.txt` | Locally served fonts and their licenses |
 | `.nojekyll` | Publishes the repository’s static assets as supplied |
+| `.gitignore` | Excludes the original JSON, dated backup files, and the local key file from normal Git staging |
 
 An export is a JSON array. Preserve each record’s `id` across edits and imports. Seed IDs are numbers. New entries use a UUID string and `added_at` in milliseconds since the Unix epoch. Optional source values may be `null`.
 
@@ -57,7 +58,7 @@ Routine collection edits belong in the tracker. To intentionally replace the sta
 - Imported all 133 source records and verified that decrypting the bundled seed reproduced the original file byte for byte.
 - Added the responsive gallery and list, search, house and kind filters, status tabs, sort controls, and CAD purchase totals.
 - Added fragrance creation and editing, departure details, and JSON backup and restore. Verified that saved edits survive a reload and that restoring the original export returns all 133 records.
-- Prepared the static site in its dedicated GitHub repository and documented the release and recovery steps above.
+- Published the repository root on `main` through GitHub Pages. The live HTML, styles, scripts, images, and fonts matched the release files byte for byte. The downloaded encrypted seed recovered all 133 original records. [Initial site release](https://github.com/anureet1706/scent-archive/commit/89cb5c0de11771d9604b330a1b425374b47cc72b) · [Successful deployment](https://github.com/anureet1706/scent-archive/actions/runs/45792629398)
 
 Add a dated entry here when the app, data format, starter collection, or publishing process changes. Git history contains the individual diffs.
 
